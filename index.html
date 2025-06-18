@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Швидке Таксі</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #F3F4F6;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    header {
+      background-color: #1A1F36;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #facc15;
+      color: #1a1f36;
+    }
+
+    nav a.register {
+      background-color: #facc15;
+      font-weight: 600;
+      color: #1a1f36;
+    }
+
+    nav a.register:hover {
+      background-color: #e6b800;
+    }
+
+    .hero {
+      background-color: #FEF3C7;
+      padding: 60px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .hero-text {
+      max-width: 600px;
+      flex: 1 1 300px;
+    }
+
+    .hero-text h1 {
+      font-size: 48px;
+      color: #1F2937;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .hero-text button {
+      background-color: #FACC15;
+      border: none;
+      padding: 15px 30px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .hero-text button:hover {
+      background-color: #e6b800;
+    }
+
+    .hero-form {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 3px 8px rgb(0 0 0 / 0.1);
+      flex: 1 1 300px;
+      min-width: 280px;
+    }
+
+    .hero-form h2 {
+      margin-bottom: 15px;
+      color: #1F2937;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .hero-form label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .hero-form input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .hero-form input:focus {
+      border-color: #facc15;
+      outline: none;
+    }
+
+    .hero-form button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #facc15;
+      border: none;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .hero-form button:hover {
+      background-color: #e6b800;
+    }
+
+    #map {
+      margin-top: 20px;
+      height: 300px;
+      width: 100%;
+      border-radius: 12px;
+      background-color: #ccc; /* тимчасова заливка, замість карти */
+    }
+
+    .features {
+      background-color: white;
+      padding: 60px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature {
+      background-color: #FEF3C7;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      color: #1F2937;
+      font-size: 20px;
+    }
+
+    .feature p {
+      font-size: 16px;
+      color: #374151;
+    }
+
+    section#tariffs {
+      background-color: #F9FAFB;
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    section#tariffs h2 {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 40px;
+    }
+
+    .tariffs-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .tariff {
+      background-color: white;
+      border-radius: 24px;
+      box-shadow: 0 3px 8px rgb(0 0 0 / 0.1);
+      padding: 30px 20px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+    }
+
+    .tariff:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.15);
+    }
+
+    .tariff h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .tariff p {
+      font-size: 16px;
+      color: #4B5563;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .tariff ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 20px;
+      color: #374151;
+    }
+
+    .tariff ul li {
+      margin-bottom: 10px;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .tariff button {
+      background-color: #facc15;
+      border: none;
+      padding: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .tariff button:hover {
+      background-color: #e6b800;
+    }
+
+    footer {
+      background-color: #1F2937;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 60px;
+      font-size: 14px;
+    }
+
+    /* Адаптивність */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        padding: 40px 20px;
+      }
+      .hero-text, .hero-form {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+      }
+      .tariffs-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">ШвидкеТаксі</div>
+  <nav>
+    <a href="#">Головна</a>
+    <a href="#">Про нас</a>
+    <a href="#">Контакти</a>
+    <a href="register.html" class="register">Зареєструватись</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <h1>Швидке таксі у твоєму місті</h1>
+    <p>Замовляй поїздку в один клік. Швидко, безпечно, зручно — все, що потрібно для твого комфорту.</p>
+    <button>Спробувати зараз</button>
+  </div>
+  <div class="hero-form">
+    <h2>Сервіс Таксі</h2>
+    <label for="from">Звідки:</label>
+    <input id="from" type="text" placeholder="Введіть адресу..." />
+
+    <label for="to">Куди:</label>
+    <input id="to" type="text" placeholder="Введіть адресу..." />
+
+    <button onclick="calculateRoute()">Розрахувати маршрут</button>
+    <div id="map"></div>
+    <div id="info"></div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature">
+    <h3>📱 Простий додаток</h3>
+    <p>Інтуїтивно зрозумілий інтерфейс для замовлення поїздок.</p>
+  </div>
+  <div class="feature">
+    <h3>💸 Доступні ціни</h3>
+    <p>Конкурентні тарифи та акції для постійних клієнтів.</p>
+  </div>
+  <div class="feature">
+    <h3>👨‍👩‍👧‍👦 Для всіх</h3>
+    <p>Ми працюємо саме для Сваляви — знаємо місто, вулиці, людей.</p>
+  </div>
+  <div class="feature">
+    <h3>🔒 Безпека</h3>
+    <p>Перевірені водії та захищені платежі.</p>
+  </div>
+</section>
+
+<section id="tariffs">
+  <h2>Наші тарифи</h2>
+  <div class="tariffs-container">
+    <div class="tariff">
+      <div>
+        <h3>Базовий</h3>
+        <p>Ідеально для коротких поїздок у межах міста</p>
+        <ul>
+          <li>🚗 Подача авто — від 5 хв</li>
+          <li>💸 10 грн за км</li>
+          <li>✅ Без прихованих комісій</li>
+        </ul>
+      </div>
+      <button>Замовити</button>
+    </div>
+
+    <div class="tariff">
+      <div>
+        <h3>Стандарт</h3>
+        <p>Зручний тариф для щоденних поїздок</p>
+        <ul>
+          <li>🚗 Авто комфорт класу</li>
+          <li>💸 15 грн за км</li>
+          <li>✅ Без прихованих комісій</li>
+        </ul>
+      </div>
+      <button>Замовити</button>
+    </div>
+
+    <div class="tariff">
+      <div>
+        <h3>Преміум</h3>
+        <p>Для тих, хто цінує комфорт і стиль</p>
+        <ul>
+          <li>🚗 Авто бізнес класу</li>
+          <li>💸 25 грн за км</li>
+          <li>✅ Персональний водій</li>
+        </ul>
+      </div>
+      <button>Замовити</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 ШвидкеТаксі — Всі права захищені
+</footer>
+
+
+<script>
+  let map, directionsService, directionsRenderer, autocompleteFrom, autocompleteTo;
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: {  lat: 48.5520, lng: 22.9851  }, // Центр Закарпаття
+      zoom: 13,
+    });
+
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+
+    autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById("from"));
+    autocompleteTo = new google.maps.places.Autocomplete(document.getElementById("to"));
+
+    // ✅ Автоматичне визначення локації користувача
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        const userLatLng = new google.maps.LatLng(lat, lng);
+        map.setCenter(userLatLng);
+
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ location: userLatLng }, (results, status) => {
+          if (status === "OK" && results[0]) {
+            document.getElementById("from").value = results[0].formatted_address;
+          } else {
+            console.warn("Не вдалося визначити адресу користувача");
+          }
+        });
+      }, (error) => {
+        console.warn("Геолокацію не дозволено або виникла помилка:", error);
+      });
+    } else {
+      console.warn("Геолокація не підтримується в цьому браузері.");
+    }
+  }
+
+  function calculateRoute() {
+    const from = document.getElementById("from").value;
+    const to = document.getElementById("to").value;
+
+    if (!from || !to) return;
+
+    const request = {
+      origin: from,
+      destination: to,
+      travelMode: 'DRIVING'
+    };
+
+    directionsService.route(request, function (result, status) {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(result);
+
+        const route = result.routes[0].legs[0];
+        const distanceText = route.distance.text;
+        const durationText = route.duration.text;
+        const distanceValue = route.distance.value / 1000; // в км
+
+        const price = (distanceValue * 10).toFixed(2); // 10 грн за км
+
+        document.getElementById("info").innerHTML = `
+            <p>Відстань: <strong>${distanceText}</strong></p>
+            <p>Час у дорозі: <strong>${durationText}</strong></p>
+            <p>Вартість поїздки: <strong>${price} грн</strong></p>
+          `;
+      } else {
+        alert("Не вдалося побудувати маршрут: " + status);
+      }
+    });
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0JFSFD5fpH1dK5d9p-fU1IxvWOw9loQ&libraries=places&callback=initMap" async defer></script>
+
+</body>
+</html>
