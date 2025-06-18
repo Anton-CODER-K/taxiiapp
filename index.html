@@ -78,7 +78,10 @@
   <div></div>
 </header>
 
+<button id="focus-btn" onclick="centerOnUser()">📍</button>
 <div id="map"></div>
+<div id="route-info"></div>
+
 
 <div class="address-bar">
   <div id="address">Визначення адреси...</div>
@@ -99,102 +102,124 @@
 </footer>
 
 <script>
-  let map, marker, geocoder;
-  let watchId;
-  let currentPosition;
+  let map, userMarker, destinationMarker, directionsService, directionsRenderer, geocoder;
+  let currentPosition = null;
 
   function initMap() {
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
     geocoder = new google.maps.Geocoder();
 
-    // Ініціалізуємо карту з центром у Києві (поки немає позиції)
     map = new google.maps.Map(document.getElementById("map"), {
       center: { lat: 50.4501, lng: 30.5234 },
       zoom: 15,
-      disableDefaultUI: true,
-      zoomControl: true,
+      disableDefaultUI: false
     });
 
-    // Запитуємо позицію і слідкуємо в реальному часі
+    directionsRenderer.setMap(map);
+
     if (navigator.geolocation) {
-      watchId = navigator.geolocation.watchPosition(
+      navigator.geolocation.watchPosition(
         (pos) => {
           currentPosition = {
             lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
+            lng: pos.coords.longitude
           };
-
-          updateMapAndMarker(currentPosition);
-          updateAddress(currentPosition);
+          updateUserMarker(currentPosition);
         },
-        (error) => {
-          alert("Помилка отримання геолокації: " + error.message);
-        },
+        (err) => alert("Геолокація не працює: " + err.message),
         { enableHighAccuracy: true, maximumAge: 0 }
       );
     } else {
-      alert("Геолокація не підтримується вашим браузером.");
+      alert("Ваш браузер не підтримує геолокацію.");
     }
+
+    map.addListener("click", (e) => {
+      const destination = {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng()
+      };
+      setDestination(destination);
+    });
   }
 
-  function updateMapAndMarker(pos) {
-    map.setCenter(pos);
-    if (!marker) {
-      marker = new google.maps.Marker({
+  function updateUserMarker(pos) {
+    if (!userMarker) {
+      userMarker = new google.maps.Marker({
         position: pos,
         map: map,
-        title: "Ваше місце",
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           scale: 8,
           fillColor: "#3f5efb",
           fillOpacity: 0.9,
-          strokeWeight: 2,
           strokeColor: "white",
+          strokeWeight: 2
         },
+        title: "Ви тут"
       });
     } else {
-      marker.setPosition(pos);
+      userMarker.setPosition(pos);
     }
   }
 
-  function updateAddress(pos) {
-    geocoder.geocode({ location: pos }, (results, status) => {
-      if (status === "OK") {
-        if (results[0]) {
-          document.getElementById("address").textContent = results[0].formatted_address;
-        } else {
-          document.getElementById("address").textContent = "Адресу не знайдено";
-        }
-      } else {
-        document.getElementById("address").textContent = "Помилка геокодування";
-      }
-    });
+  function centerOnUser() {
+    if (currentPosition) {
+      map.setCenter(currentPosition);
+    }
   }
 
-  function selectCarType(button) {
-    document.querySelectorAll(".car-type button").forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
-  }
+  function setDestination(dest) {
+    if (!currentPosition) {
+      alert("Геопозиція ще не отримана.");
+      return;
+    }
 
-  function orderTaxi() {
-    alert("Таксі замовлено на адресу:\n" + document.getElementById("address").textContent +
-      "\nТип авто: " + document.querySelector(".car-type .active").textContent);
-  }
-
-  function editAddress() {
-    let newAddress = prompt("Введіть адресу:", document.getElementById("address").textContent);
-    if (newAddress) {
-      document.getElementById("address").textContent = newAddress;
-      // Тут можна додати геокодування введеної адреси, щоб оновити карту
-      geocoder.geocode({ address: newAddress }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          map.setCenter(results[0].geometry.location);
-          marker.setPosition(results[0].geometry.location);
-        } else {
-          alert("Адресу не знайдено");
-        }
+    if (!destinationMarker) {
+      destinationMarker = new google.maps.Marker({
+        position: dest,
+        map: map,
+        icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+        title: "Пункт призначення"
       });
+    } else {
+      destinationMarker.setPosition(dest);
     }
+
+    drawRoute(currentPosition, dest);
+  }
+
+  function drawRoute(origin, destination) {
+    directionsService.route(
+      {
+        origin,
+        destination,
+        travelMode: google.maps.TravelMode.DRIVING
+      },
+      (result, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(result);
+          const distanceText = result.routes[0].legs[0].distance.text;
+          const distanceKm = result.routes[0].legs[0].distance.value / 1000;
+          const price = calculatePrice(distanceKm);
+          showRouteInfo(distanceText, price);
+        } else {
+          alert("Маршрут не знайдено: " + status);
+        }
+      }
+    );
+  }
+
+  function calculatePrice(km) {
+    const base = 30;
+    const perKm = 10;
+    return Math.round(base + km * perKm);
+  }
+
+  function showRouteInfo(distance, price) {
+    const info = document.getElementById("route-info");
+    info.innerHTML = `📍 Відстань: <b>${distance}</b><br>💰 Орієнтовна ціна: <b>${price} грн</b>`;
+    info.style.display = "block";
   }
 </script>
 
