@@ -144,9 +144,7 @@
       flex-grow: 1;
       text-align: left;
     }
-    .hidden {
-      display: none;
-    }
+
     .car-details h4 {
       margin: 0;
       color: #203a43;
@@ -165,6 +163,42 @@
       font-size: 0.95em;
     }
 
+
+    #car-list:not(.hidden) {
+      max-height: 1000px; /* достатньо велике значення */
+    }
+
+
+    #address-bar-id {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    #address-bar-id.hidden {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+    }
+
+
+
+    .car-list-wrapper {
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      max-height: 60px; /* висота кнопки */
+    }
+
+    .car-list-wrapper.open {
+      max-height: 1000px; /* або скільки треба для автівок */
+    }
+
+    #car-list {
+      transition: opacity 0.4s ease;
+      opacity: 0;
+    }
+
+    .car-list-wrapper.open #car-list {
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body>
@@ -179,21 +213,22 @@
 <div id="route-info"></div>
 
 
-<div class="address-bar">
+<div id="address-bar-id" class="address-bar">
   <input id="from-input" placeholder="Звідки" />
   <input id="to-input" placeholder="Куди" />
   <button onclick="buildRoute()">Побудувати маршрут</button>
 </div>
 
 <div class="car-selector">
-  <button class="toggle-car-list" onclick="toggleCarList()">
-    🚗 Вибрати авто <span id="arrow">▼</span>
-  </button>
-  <div id="car-list" class="hidden">
-    <!-- Сюди динамічно буде додано карти -->
+  <div class="car-list-wrapper">
+    <button class="toggle-car-list" onclick="toggleCarList()">
+      🚗 Вибрати авто <span id="arrow">▼</span>
+    </button>
+    <div id="car-list">
+      <!-- Динамічні карти -->
+    </div>
   </div>
 </div>
-
 <button class="order-btn" onclick="orderTaxi()">Замовити таксі</button>
 
 <footer>
@@ -251,19 +286,30 @@
 
     directionsRenderer.setMap(map);
 
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(
-        (pos) => {
-          currentPosition = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          };
-          updateUserMarker(currentPosition);
-        },
-        (err) => alert("Геолокація не працює: " + err.message),
-        { enableHighAccuracy: true, maximumAge: 0 }
-      );
-    }
+    let hasCenteredMap = false;
+
+    navigator.geolocation.watchPosition(
+      (pos) => {
+        currentPosition = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        };
+
+        updateUserMarker(currentPosition);
+
+        if (!hasCenteredMap) {
+          map.setCenter(currentPosition);
+          hasCenteredMap = true;
+
+          reverseGeocode(currentPosition, (address) => {
+            document.getElementById("from-input").value = address;
+            fromCoords = currentPosition;
+          });
+        }
+      },
+      (err) => alert("Геолокація не працює: " + err.message),
+      { enableHighAccuracy: true, maximumAge: 0 }
+    );
 
     map.addListener("click", (e) => {
       const destination = {
@@ -407,11 +453,15 @@
   ];
 
   function toggleCarList() {
-    const list = document.getElementById("car-list");
+    const wrapper = document.querySelector(".car-list-wrapper");
     const arrow = document.getElementById("arrow");
-    list.classList.toggle("hidden");
-    arrow.textContent = list.classList.contains("hidden") ? "▼" : "▲";
+    const addressBar = document.getElementById("address-bar-id");
 
+    const isOpen = wrapper.classList.toggle("open");
+    arrow.textContent = isOpen ? "▲" : "▼";
+    addressBar.classList.toggle("hidden", isOpen);
+
+    const list = document.getElementById("car-list");
     if (!list.classList.contains("loaded")) {
       renderCarList();
       list.classList.add("loaded");
@@ -472,3 +522,4 @@
 
 </body>
 </html>
+
