@@ -41,24 +41,29 @@
       transition: background 0.3s ease;
     }
     .car-type button.active {
-      background: linear-gradient(135deg, #fc466b, #3f5efb);
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: white;
     }
     .order-btn {
       margin: 15px auto 15px auto;
       padding: 15px 60px;
-      background: linear-gradient(135deg, #fc466b, #3f5efb);
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       border: none; border-radius: 35px;
       color: white; font-size: 1.2em;
       cursor: pointer;
-      box-shadow: 0 6px 10px rgba(252,70,107,0.7);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.8);
       transition: box-shadow 0.3s ease;
       display: block;
       z-index: 10;
       position: relative;
+
     }
     .order-btn:hover {
-      box-shadow: 0 8px 15px rgba(252,70,107,1);
+      box-shadow: 0px 8px 15px rgba(0,0,0,1);
+    }
+    .order-btn:active {
+      filter: brightness(0.85); /* затемнення при кліку */
+      transform: scale(0.97);   /* легке втиснення */
     }
     footer {
       display: flex; justify-content: space-around;
@@ -69,6 +74,97 @@
       font-weight: bold; font-size: 1em;
       cursor: pointer;
     }
+    .address-bar input {
+      flex: 1;
+      margin: 0 5px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .address-bar button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      background: #203a43;
+      color: white;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .address-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .address-bar input, .address-bar button {
+        width: 100%;
+      }
+    }
+
+    .car-selector {
+      margin: 10px auto;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .toggle-car-list {
+      padding: 10px 20px;
+      background: #203a43;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    .toggle-car-list {
+
+    }
+
+    #car-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+
+    .car-card {
+      background: #f2f2f2;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .car-card img {
+      width: 80px;
+      border-radius: 10px;
+    }
+
+    .car-details {
+      flex-grow: 1;
+      text-align: left;
+    }
+    .hidden {
+      display: none;
+    }
+    .car-details h4 {
+      margin: 0;
+      color: #203a43;
+    }
+
+    .car-details p {
+      margin: 5px 0;
+    }
+
+    .car-details b {
+      color: #007bff;
+    }
+
+    .car-details .features {
+      color: #00bcd4;
+      font-size: 0.95em;
+    }
+
   </style>
 </head>
 <body>
@@ -84,13 +180,18 @@
 
 
 <div class="address-bar">
-  <div id="address">Визначення адреси...</div>
-  <button onclick="editAddress()">✎ Змінити</button>
+  <input id="from-input" placeholder="Звідки" />
+  <input id="to-input" placeholder="Куди" />
+  <button onclick="buildRoute()">Побудувати маршрут</button>
 </div>
 
-<div class="car-type">
-  <button class="active" onclick="selectCarType(this)">Економ</button>
-  <button onclick="selectCarType(this)">Бізнес</button>
+<div class="car-selector">
+  <button class="toggle-car-list" onclick="toggleCarList()">
+    🚗 Вибрати авто <span id="arrow">▼</span>
+  </button>
+  <div id="car-list" class="hidden">
+    <!-- Сюди динамічно буде додано карти -->
+  </div>
 </div>
 
 <button class="order-btn" onclick="orderTaxi()">Замовити таксі</button>
@@ -102,9 +203,41 @@
 </footer>
 
 <script>
+  let selectedDistance = null;
+  let autocompleteFrom, autocompleteTo;
+  let fromCoords = null;
+  let toCoords = null;
   let map, userMarker, destinationMarker, directionsService, directionsRenderer, geocoder;
   let currentPosition = null;
 
+  function onGoogleMapsLoaded() {
+    initMap();
+    initAutocomplete();
+  }
+
+  // Google Autocomplete
+  function initAutocomplete() {
+    autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById("from-input"));
+    autocompleteTo = new google.maps.places.Autocomplete(document.getElementById("to-input"));
+
+    autocompleteFrom.addListener("place_changed", () => {
+      const place = autocompleteFrom.getPlace();
+      fromCoords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+    });
+
+    autocompleteTo.addListener("place_changed", () => {
+      const place = autocompleteTo.getPlace();
+      toCoords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+    });
+  }
+
+  // Ініціалізація мапи
   function initMap() {
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
@@ -130,8 +263,6 @@
         (err) => alert("Геолокація не працює: " + err.message),
         { enableHighAccuracy: true, maximumAge: 0 }
       );
-    } else {
-      alert("Ваш браузер не підтримує геолокацію.");
     }
 
     map.addListener("click", (e) => {
@@ -143,6 +274,7 @@
     });
   }
 
+  // Встановлення маркеру користувача
   function updateUserMarker(pos) {
     if (!userMarker) {
       userMarker = new google.maps.Marker({
@@ -161,14 +293,21 @@
     } else {
       userMarker.setPosition(pos);
     }
+
+    reverseGeocode(pos, (address) => {
+      document.getElementById("from-input").value = address;
+      fromCoords = pos;
+    });
   }
 
+  // Центрування карти
   function centerOnUser() {
     if (currentPosition) {
       map.setCenter(currentPosition);
     }
   }
 
+  // Встановлення пункту призначення
   function setDestination(dest) {
     if (!currentPosition) {
       alert("Геопозиція ще не отримана.");
@@ -186,30 +325,53 @@
       destinationMarker.setPosition(dest);
     }
 
-    drawRoute(currentPosition, dest);
+    reverseGeocode(dest, (address) => {
+      document.getElementById("to-input").value = address;
+      toCoords = dest;
+      buildRoute(); // побудова маршруту одразу
+    });
   }
 
-  function drawRoute(origin, destination) {
+  // Побудова маршруту
+  function buildRoute() {
+    if (!fromCoords || !toCoords) {
+      alert("Будь ласка, виберіть обидві адреси.");
+      return;
+    }
+
     directionsService.route(
       {
-        origin,
-        destination,
+        origin: fromCoords,
+        destination: toCoords,
         travelMode: google.maps.TravelMode.DRIVING
       },
       (result, status) => {
         if (status === "OK") {
           directionsRenderer.setDirections(result);
-          const distanceText = result.routes[0].legs[0].distance.text;
           const distanceKm = result.routes[0].legs[0].distance.value / 1000;
+          selectedDistance = distanceKm;
           const price = calculatePrice(distanceKm);
-          showRouteInfo(distanceText, price);
+          showRouteInfo(result.routes[0].legs[0].distance.text, price);
+          updateCarList(); // оновити ціни в автівках
         } else {
-          alert("Маршрут не знайдено: " + status);
+          alert("Не вдалось побудувати маршрут: " + status);
         }
       }
     );
   }
 
+  // Зворотне геокодування
+  function reverseGeocode(coords, callback) {
+    geocoder.geocode({ location: coords }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        callback(results[0].formatted_address);
+      } else {
+        callback("Адресу не знайдено");
+      }
+    });
+  }
+
+  // Показати ціну і відстань
   function calculatePrice(km) {
     const base = 30;
     const perKm = 10;
@@ -221,10 +383,92 @@
     info.innerHTML = `📍 Відстань: <b>${distance}</b><br>💰 Орієнтовна ціна: <b>${price} грн</b>`;
     info.style.display = "block";
   }
+
+  // Меню автівок
+  const cars = [
+    {
+      type: "Економ",
+      pricePerKm: 10,
+      image: "https://img.icons8.com/color/96/sedan.png",
+      features: ["🔹 Водичка", "📶 Wi-Fi"],
+    },
+    {
+      type: "Бізнес",
+      pricePerKm: 18,
+      image: "https://img.icons8.com/color/96/limousine.png",
+      features: ["🔹 Водичка", "📶 Wi-Fi", "😌 Тихий режим"],
+    },
+    {
+      type: "Комфорт",
+      pricePerKm: 14,
+      image: "https://img.icons8.com/color/96/car.png",
+      features: ["🔹 Водичка"],
+    }
+  ];
+
+  function toggleCarList() {
+    const list = document.getElementById("car-list");
+    const arrow = document.getElementById("arrow");
+    list.classList.toggle("hidden");
+    arrow.textContent = list.classList.contains("hidden") ? "▼" : "▲";
+
+    if (!list.classList.contains("loaded")) {
+      renderCarList();
+      list.classList.add("loaded");
+    } else {
+      updateCarList();
+    }
+  }
+
+  function renderCarList() {
+    const container = document.getElementById("car-list");
+    container.innerHTML = "";
+
+    cars.forEach(car => {
+      const card = document.createElement("div");
+      card.className = "car-card";
+
+      const price = selectedDistance
+        ? Math.round(30 + car.pricePerKm * selectedDistance)
+        : "Невідомо";
+
+      card.innerHTML = `
+      <img src="${car.image}" alt="${car.type}" />
+      <div class="car-details">
+        <h4>${car.type}</h4>
+        <p>Ціна за км: <b>${car.pricePerKm} грн</b></p>
+        <p>Орієнтовна вартість: <b>${price} грн</b></p>
+        <p class="features">Послуги: ${car.features.join(", ")}</p>
+      </div>
+    `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function updateCarList() {
+    if (!selectedDistance) return;
+    const prices = document.querySelectorAll(".car-card");
+
+    prices.forEach((card, index) => {
+      const priceElement = card.querySelectorAll("p")[1];
+      const car = cars[index];
+      const total = Math.round(30 + car.pricePerKm * selectedDistance);
+      priceElement.innerHTML = `Орієнтовна вартість: <b>${total} грн</b>`;
+    });
+  }
 </script>
 
-<script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0JFSFD5fpH1dK5d9p-fU1IxvWOw9loQ&callback=initMap">
+
+<script>
+  function onGoogleMapsLoaded() {
+    initMap();
+    initAutocomplete(); // <- Додаємо це
+  }
 </script>
+<script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0JFSFD5fpH1dK5d9p-fU1IxvWOw9loQ&libraries=places&callback=onGoogleMapsLoaded">
+</script>
+
 </body>
 </html>
