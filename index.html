@@ -11,44 +11,44 @@
       font-family: Arial, sans-serif;
       display: flex; flex-direction: column;
     }
-    #map {
-      flex-grow: 1;
-    }
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 15px;
-      background: #222;
-      color: white;
-    }
-    .address-bar {
-      position: absolute;
-      top: 60px; left: 15px; right: 15px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 8px;
-      padding: 10px 15px;
-      display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      font-weight: bold;
-      z-index: 10;
-    }
-    .car-type {
-      display: flex; justify-content: center; margin: 10px 0;
-    }
-    .car-type button {
-      background: #eee; border: none; margin: 0 10px;
-      padding: 10px 20px; border-radius: 30px;
-      font-weight: bold; cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .car-type button.active {
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-    }
-    .order-btn {
-      margin: 15px auto 15px auto;
-      padding: 15px 60px;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      border: none; border-radius: 35px;
+      #map {
+        flex-grow: 1;
+      }
+      header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 10px 15px;
+        background: #222;
+        color: white;
+      }
+      .address-bar {
+        position: absolute;
+        top: 60px; left: 15px; right: 15px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 8px;
+        padding: 10px 15px;
+        display: flex; justify-content: space-between; align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        font-weight: bold;
+        z-index: 10;
+      }
+      .car-type {
+        display: flex; justify-content: center; margin: 10px 0;
+      }
+      .car-type button {
+        background: #eee; border: none; margin: 0 10px;
+        padding: 10px 20px; border-radius: 30px;
+        font-weight: bold; cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      .car-type button.active {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: white;
+      }
+      .order-btn {
+        margin: 15px auto 15px auto;
+        padding: 15px 60px;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        border: none; border-radius: 35px;
       color: white; font-size: 1.2em;
       cursor: pointer;
       box-shadow: 0 6px 10px rgba(0,0,0,0.8);
@@ -140,28 +140,8 @@
       border-radius: 10px;
     }
 
-    .car-details {
-      flex-grow: 1;
-      text-align: left;
-    }
 
-    .car-details h4 {
-      margin: 0;
-      color: #203a43;
-    }
 
-    .car-details p {
-      margin: 5px 0;
-    }
-
-    .car-details b {
-      color: #007bff;
-    }
-
-    .car-details .features {
-      color: #00bcd4;
-      font-size: 0.95em;
-    }
 
 
     #car-list:not(.hidden) {
@@ -199,16 +179,115 @@
       opacity: 1;
     }
 
+    .car-card {
+      background: white;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .car-card:hover {
+      transform: scale(1.02);
+    }
+
+    .car-details h4 {
+      margin: 0 0 5px 0;
+      font-size: 1.1em;
+      color: #203a43;
+    }
+
+    .car-details p {
+      margin: 2px 0;
+      font-size: 0.95em;
+    }
+
+    .car-details b {
+      color: #2c5364;
+    }
+
+    .features {
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+
+    @media (prefers-color-scheme: dark) {
+
+      body, html {
+        background: #1e1e1e;
+        color: #f0f0f0;
+      }
+
+      .address-bar {
+        background: rgba(30, 30, 30, 0.95);
+        color: white;
+      }
+
+      .address-bar input {
+        background: #1e1e1e;
+        color: white;
+        border: 1px solid #333;
+      }
+
+      .address-bar button {
+        background: #ff8c00;
+        color: white;
+      }
+
+      .order-btn {
+        background: linear-gradient(135deg, #ff8c00, #16213e);
+        color: white;
+      }
+
+      footer {
+
+        color: white;
+      }
+
+      .car-card {
+        background: #1e1e1e;
+        color: white;
+        border: 1px solid #333;
+      }
+
+      .car-details h4 {
+        color: #58a6ff;
+      }
+
+      .car-details b {
+        color: #f39c12;
+      }
+    }
+    .toggle-car-list {
+      background: #ff8c00
+    }
+
+
   </style>
 </head>
 <body>
+
 <header>
   <div>☰</div>
   <div>TaxiApp</div>
   <div></div>
+  <footer>
+    <button>Історія</button>
+    <button>Профіль</button>
+    <button>Підтримка</button>
+  </footer>
 </header>
 
-<button id="focus-btn" onclick="centerOnUser()">📍</button>
+
 <div id="map"></div>
 <div id="route-info"></div>
 
@@ -229,50 +308,115 @@
     </div>
   </div>
 </div>
-<button class="order-btn" onclick="orderTaxi()">Замовити таксі</button>
 
-<footer>
-  <button>Історія</button>
-  <button>Профіль</button>
-  <button>Підтримка</button>
-</footer>
+
+
 
 <script>
-  let selectedDistance = null;
-  let autocompleteFrom, autocompleteTo;
+  let map, directionsService, directionsRenderer, geocoder;
   let fromCoords = null;
   let toCoords = null;
-  let map, userMarker, destinationMarker, directionsService, directionsRenderer, geocoder;
+  let userMarker = null;
+  let destinationMarker = null;
   let currentPosition = null;
+  let estimatedTime = null;
+  let autocompleteFrom, autocompleteTo;
+  let selectedDistance = null;
+
+  const darkBlueStyle = [
+    {
+      elementType: "geometry",
+      stylers: [{ color: "#1c2b4a" }]
+    },
+
+    {
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#a0d3ff" }]
+    },
+    {
+      elementType: "labels.text.stroke",
+      stylers: [{ color: "#1c2b4a" }]
+    },
+    {
+      featureType: "administrative",
+      elementType: "geometry",
+      stylers: [{ color: "#284b63" }]
+    },
+    {
+      featureType: "poi",
+      elementType: "geometry",
+      stylers: [{ color: "#2e3b55" }]
+    },
+    {
+      featureType: "poi",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#8fbcd4" }]
+    },
+    {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#334d72" }]
+    },
+    {
+      featureType: "road",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#cbd9e1" }]
+    },
+    {
+      featureType: "road.highway",
+      elementType: "geometry",
+      stylers: [{ color: "#415a77" }]
+    },
+    {
+      featureType: "transit",
+      elementType: "geometry",
+      stylers: [{ color: "#2d3c57" }]
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#0f1e39" }]
+    },
+    {
+      featureType: "water",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#a6cde5" }]
+    }
+  ];
+
+  const cars = [
+    {
+      type: "Економ",
+      pricePerKm: 20,
+      image: "standart_car.jpg",
+      features: ["🔹 Водичка", "📶 Wi-Fi"],
+    },
+    {
+      type: "Бізнес",
+      pricePerKm: 40,
+      image: "Bisnes_car.jpg",
+      features: ["🔹 Водичка", "📶 Wi-Fi", "😌 Тихий режим"],
+    },
+    {
+      type: "Комфорт",
+      pricePerKm: 30,
+      image: "Comfort_car.jpg",
+      features: ["🔹 Водичка"],
+    }
+  ];
 
   function onGoogleMapsLoaded() {
     initMap();
     initAutocomplete();
   }
 
-  // Google Autocomplete
-  function initAutocomplete() {
-    autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById("from-input"));
-    autocompleteTo = new google.maps.places.Autocomplete(document.getElementById("to-input"));
-
-    autocompleteFrom.addListener("place_changed", () => {
-      const place = autocompleteFrom.getPlace();
-      fromCoords = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng()
-      };
-    });
-
-    autocompleteTo.addListener("place_changed", () => {
-      const place = autocompleteTo.getPlace();
-      toCoords = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng()
-      };
-    });
+  function getMapStyle() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return darkBlueStyle;
+    }
+    return null; // стандартна тема
   }
 
-  // Ініціалізація мапи
   function initMap() {
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
@@ -281,34 +425,30 @@
     map = new google.maps.Map(document.getElementById("map"), {
       center: { lat: 50.4501, lng: 30.5234 },
       zoom: 15,
-      disableDefaultUI: false
+      styles: getMapStyle(),
+      streetViewControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false,
+      zoomControl: false,
     });
 
     directionsRenderer.setMap(map);
 
-    let hasCenteredMap = false;
-
-    navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (pos) => {
         currentPosition = {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude
         };
-
         updateUserMarker(currentPosition);
-
-        if (!hasCenteredMap) {
-          map.setCenter(currentPosition);
-          hasCenteredMap = true;
-
-          reverseGeocode(currentPosition, (address) => {
-            document.getElementById("from-input").value = address;
-            fromCoords = currentPosition;
-          });
-        }
+        map.setCenter(currentPosition);
+        reverseGeocode(currentPosition, (address) => {
+          document.getElementById("from-input").value = address;
+          fromCoords = currentPosition;
+        });
       },
       (err) => alert("Геолокація не працює: " + err.message),
-      { enableHighAccuracy: true, maximumAge: 0 }
+      { enableHighAccuracy: true }
     );
 
     map.addListener("click", (e) => {
@@ -320,7 +460,31 @@
     });
   }
 
-  // Встановлення маркеру користувача
+  function initAutocomplete() {
+    autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById("from-input"));
+    autocompleteTo = new google.maps.places.Autocomplete(document.getElementById("to-input"));
+
+    autocompleteFrom.addListener("place_changed", () => {
+      const place = autocompleteFrom.getPlace();
+      if (!place.geometry) return;
+      fromCoords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+      maybeBuildRoute();
+    });
+
+    autocompleteTo.addListener("place_changed", () => {
+      const place = autocompleteTo.getPlace();
+      if (!place.geometry) return;
+      toCoords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+      maybeBuildRoute();
+    });
+  }
+
   function updateUserMarker(pos) {
     if (!userMarker) {
       userMarker = new google.maps.Marker({
@@ -343,23 +507,11 @@
     reverseGeocode(pos, (address) => {
       document.getElementById("from-input").value = address;
       fromCoords = pos;
+      maybeBuildRoute();
     });
   }
 
-  // Центрування карти
-  function centerOnUser() {
-    if (currentPosition) {
-      map.setCenter(currentPosition);
-    }
-  }
-
-  // Встановлення пункту призначення
   function setDestination(dest) {
-    if (!currentPosition) {
-      alert("Геопозиція ще не отримана.");
-      return;
-    }
-
     if (!destinationMarker) {
       destinationMarker = new google.maps.Marker({
         position: dest,
@@ -371,20 +523,20 @@
       destinationMarker.setPosition(dest);
     }
 
+    toCoords = dest;
     reverseGeocode(dest, (address) => {
       document.getElementById("to-input").value = address;
-      toCoords = dest;
-      buildRoute(); // побудова маршруту одразу
+      maybeBuildRoute();
     });
   }
 
-  // Побудова маршруту
-  function buildRoute() {
-    if (!fromCoords || !toCoords) {
-      alert("Будь ласка, виберіть обидві адреси.");
-      return;
+  function maybeBuildRoute() {
+    if (fromCoords && toCoords) {
+      buildRoute();
     }
+  }
 
+  function buildRoute() {
     directionsService.route(
       {
         origin: fromCoords,
@@ -394,11 +546,13 @@
       (result, status) => {
         if (status === "OK") {
           directionsRenderer.setDirections(result);
-          const distanceKm = result.routes[0].legs[0].distance.value / 1000;
-          selectedDistance = distanceKm;
-          const price = calculatePrice(distanceKm);
-          showRouteInfo(result.routes[0].legs[0].distance.text, price);
-          updateCarList(); // оновити ціни в автівках
+          const leg = result.routes[0].legs[0];
+          selectedDistance = leg.distance.value / 1000;
+          estimatedTime = leg.duration.value / 60;
+
+          const price = calculatePrice(selectedDistance);
+
+          renderCarList();
         } else {
           alert("Не вдалось побудувати маршрут: " + status);
         }
@@ -406,7 +560,6 @@
     );
   }
 
-  // Зворотне геокодування
   function reverseGeocode(coords, callback) {
     geocoder.geocode({ location: coords }, (results, status) => {
       if (status === "OK" && results[0]) {
@@ -417,40 +570,12 @@
     });
   }
 
-  // Показати ціну і відстань
   function calculatePrice(km) {
     const base = 30;
     const perKm = 10;
     return Math.round(base + km * perKm);
   }
 
-  function showRouteInfo(distance, price) {
-    const info = document.getElementById("route-info");
-    info.innerHTML = `📍 Відстань: <b>${distance}</b><br>💰 Орієнтовна ціна: <b>${price} грн</b>`;
-    info.style.display = "block";
-  }
-
-  // Меню автівок
-  const cars = [
-    {
-      type: "Економ",
-      pricePerKm: 10,
-      image: "https://img.icons8.com/color/96/sedan.png",
-      features: ["🔹 Водичка", "📶 Wi-Fi"],
-    },
-    {
-      type: "Бізнес",
-      pricePerKm: 18,
-      image: "https://img.icons8.com/color/96/limousine.png",
-      features: ["🔹 Водичка", "📶 Wi-Fi", "😌 Тихий режим"],
-    },
-    {
-      type: "Комфорт",
-      pricePerKm: 14,
-      image: "https://img.icons8.com/color/96/car.png",
-      features: ["🔹 Водичка"],
-    }
-  ];
 
   function toggleCarList() {
     const wrapper = document.querySelector(".car-list-wrapper");
@@ -475,23 +600,25 @@
     container.innerHTML = "";
 
     cars.forEach(car => {
+      const distance = selectedDistance || 0;
+      const timeInMin = estimatedTime ? Math.round(estimatedTime) : Math.round(distance / 0.5);
+      const price = distance ? Math.round(30 + car.pricePerKm * distance) : "Невідомо";
+
       const card = document.createElement("div");
       card.className = "car-card";
 
-      const price = selectedDistance
-        ? Math.round(30 + car.pricePerKm * selectedDistance)
-        : "Невідомо";
-
       card.innerHTML = `
-      <img src="${car.image}" alt="${car.type}" />
-      <div class="car-details">
-        <h4>${car.type}</h4>
-        <p>Ціна за км: <b>${car.pricePerKm} грн</b></p>
-        <p>Орієнтовна вартість: <b>${price} грн</b></p>
-        <p class="features">Послуги: ${car.features.join(", ")}</p>
-      </div>
-    `;
-
+        <img src="${car.image}" alt="${car.type}" />
+        <div class="car-details">
+          <h4>${car.type}</h4>
+          <div class="trip-info">
+            <span class="info-item">💰 <b>${price} грн</b></span>
+            <span class="info-item">📏 ${distance.toFixed(1)} км</span>
+            <span class="info-item">🕒 ~${timeInMin} хв</span>
+          </div>
+          <p class="features">${car.features.join(" • ")}</p>
+        </div>
+      `;
       container.appendChild(card);
     });
   }
@@ -509,17 +636,11 @@
   }
 </script>
 
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0JFSFD5fpH1dK5d9p-fU1IxvWOw9loQ&libraries=places&callback=onGoogleMapsLoaded"
+  async
+  defer
+></script>
 
-<script>
-  function onGoogleMapsLoaded() {
-    initMap();
-    initAutocomplete(); // <- Додаємо це
-  }
-</script>
-<script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0JFSFD5fpH1dK5d9p-fU1IxvWOw9loQ&libraries=places&callback=onGoogleMapsLoaded">
-</script>
-
-</body>
 </html>
 
